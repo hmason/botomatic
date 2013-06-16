@@ -1,2 +1,3 @@
 *.pyc
-settings_backup.py
+*.pickle
+settings.py
