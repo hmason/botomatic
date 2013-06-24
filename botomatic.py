@@ -7,6 +7,7 @@ import settings
 
 class TBot(object):
     handle = None
+    debug_mode = True
     settings = {}
     tweets = []
 
@@ -38,12 +39,16 @@ class TBot(object):
         self.history['last_dm_id'] = dms[0].id
         return dms
 
-    def handle_mentions(self):
-        mentions = self.api.mentions()
+    def handle_mentions(self, new_only=True):
+        if new_only and self.history.get('last_mention_id', None):
+            mentions = self.api.mentions_timeline(since_id=self.history['last_mention_id'])
+        else:
+            mentions = self.api.mentions_timeline()
+        
+        if mentions:
+            self.history['last_mention_id'] = mentions[0].id
 
-        self.history['mentions'] = mentions
-
-        print mentions
+        return mentions
 
     def search(self, query):
         pass
@@ -57,10 +62,11 @@ class TBot(object):
     def publish_tweets(self):
         if self.tweets:
             for tweet in self.tweets:
-                #self.api.update_status(tweet[:140]) # cap length at 140 chars
-                print "TWEETED: " + tweet[:140] 
-
-        self.history['tweets'].extend(self.tweets)
+                if self.debug_mode:
+                    print "TWEETED: " + tweet[:140] # for debug mode
+                else:
+                    status = self.api.update_status(tweet[:140]) # cap length at 140 chars
+                    self.history['last_tweet_id'] = status.id
 
     def authenticate(self):
         print self.auth.get_authorization_url()
@@ -77,8 +83,8 @@ class TBot(object):
         pass
 
     def wrap_up(self):
-        pickle.dump(self.history, open(self.history_filename, 'w'))
         self.publish_tweets()
+        pickle.dump(self.history, open(self.history_filename, 'w'))
 
 
 if __name__ == '__main__':
