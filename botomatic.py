@@ -36,10 +36,8 @@ class TBot(object):
         else:
             dms = self.api.direct_messages()
 
-        try:
+        if dms:
             self.history['last_dm_id'] = dms[0].id
-        except IndexError:
-            pass
 
         return dms
 

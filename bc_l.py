@@ -2,8 +2,6 @@ from botomatic import TBot
 import subprocess
 
 class bc_l(TBot):
-    debug_mode = False
-
     def __init__(self):
         handle = "bc_l"
         super(bc_l, self).__init__(handle)
@@ -30,7 +28,6 @@ class bc_l(TBot):
             out = self.bc_l(expression)
             if out.strip():
                 reply = "@%s %s = %s" % (msg.user.screen_name, expression, out.strip())
-                print reply
                 self.tweets.append(reply)
 
 
