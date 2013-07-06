@@ -36,7 +36,11 @@ class TBot(object):
         else:
             dms = self.api.direct_messages()
 
-        self.history['last_dm_id'] = dms[0].id
+        try:
+            self.history['last_dm_id'] = dms[0].id
+        except IndexError:
+            pass
+
         return dms
 
     def handle_mentions(self, new_only=True):
