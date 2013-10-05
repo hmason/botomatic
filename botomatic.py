@@ -9,12 +9,14 @@ import re
 
 import settings
 
-def bitlify(url):
+def bitlify(match):
     if settings.BITLY_LOGIN and settings.BITLY_APIKEY:
-        response = urllib2.urlopen("http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': url, 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN}))
+        #response = urllib2.urlopen("http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': url, 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN}))
+        match.group
+        #print "http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': url, 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN})
         data = response.read()
         print data
-        return json.loads(data)['data']['url']
+        return json.loads(data)
 
 def testfunc(url):
     print url.group('url')
