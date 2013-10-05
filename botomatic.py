@@ -1,13 +1,29 @@
 import sys
 import os
 import pickle
-import tweepy
+import tweepy #requires version 2.1+
+import urllib
+import urllib2
+import json
+import re
 
 import settings
+
+def bitlify(url):
+    if settings.BITLY_LOGIN and settings.BITLY_APIKEY:
+        response = urllib2.urlopen("http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': url, 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN}))
+        data = response.read()
+        print data
+        return json.loads(data)['data']['url']
+
+def testfunc(url):
+    print url.group('url')
+
 
 class TBot(object):
     handle = None
     debug_mode = True
+    bitlify_links = True
     settings = {}
     tweets = []
 
@@ -52,8 +68,8 @@ class TBot(object):
 
         return mentions
 
-    def search(self, query):
-        pass
+    def search(self, query, lang='en'):
+        return self.api.search(q=query, lang=lang)
 
     def handle_stream(self):
         pass
@@ -61,11 +77,20 @@ class TBot(object):
     def handle_followers(self):
         pass
 
+    def process_tweets(self):
+        http_re = re.compile('.*(?P<url>http://\S+).*')
+        for tweet in self.tweets:
+            print tweet
+            if 'http://' in tweet:
+                http_re.sub(bitlify, tweet)
+            print tweet
+                
+
     def publish_tweets(self):
         if self.tweets:
             for tweet in self.tweets:
                 if self.debug_mode:
-                    print "TWEETED: " + tweet[:140] # for debug mode
+                    print "FAKETWEET: " + tweet[:140] # for debug mode
                 else:
                     status = self.api.update_status(tweet[:140]) # cap length at 140 chars
                     self.history['last_tweet_id'] = status.id
@@ -85,6 +110,7 @@ class TBot(object):
         pass
 
     def wrap_up(self):
+        self.process_tweets()
         self.publish_tweets()
         pickle.dump(self.history, open(self.history_filename, 'w'))
 
