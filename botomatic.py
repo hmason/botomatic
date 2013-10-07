@@ -11,15 +11,14 @@ import settings
 
 def bitlify(match):
     if settings.BITLY_LOGIN and settings.BITLY_APIKEY:
-        #response = urllib2.urlopen("http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': url, 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN}))
-        match.group
-        #print "http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': url, 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN})
+        response = urllib2.urlopen("http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': match.group(0), 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN}))
         data = response.read()
-        print data
-        return json.loads(data)
+        try:
+            url = json.loads(data)['data']['url']
+        except ValueError:
+            url = match.group(0)
 
-def testfunc(url):
-    print url.group('url')
+        return url
 
 
 class TBot(object):
@@ -80,12 +79,14 @@ class TBot(object):
         pass
 
     def process_tweets(self):
-        http_re = re.compile('.*(?P<url>http://\S+).*')
+        http_re = re.compile(r'http://\S+')
+        processed_tweets = []
         for tweet in self.tweets:
-            print tweet
+            #print tweet
             if 'http://' in tweet:
-                http_re.sub(bitlify, tweet)
-            print tweet
+                tweet = http_re.sub(bitlify, tweet)
+            processed_tweets.append(tweet)
+        self.tweets = processed_tweets
                 
 
     def publish_tweets(self):
