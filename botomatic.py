@@ -88,14 +88,21 @@ class TBot(object):
         self.tweets = processed_tweets
                 
 
-    def publish_tweets(self):
+    def publish_tweets(self, limit=None):
+        tweeted_count = 0
+
         if self.tweets:
             for tweet in self.tweets:
                 if self.debug_mode:
                     print "FAKETWEET: " + tweet[:140] # for debug mode
                 else:
-                    status = self.api.update_status(tweet[:140]) # cap length at 140 chars
-                    self.history['last_tweet_id'] = status.id
+                    try:
+                        if limit and tweeted_count <= limit:
+                            status = self.api.update_status(tweet[:140]) # cap length at 140 chars
+                            self.history['last_tweet_id'] = status.id
+                            tweeted_count += 1
+                    except tweepy.error.TweepError: # prob a duplicate
+                        pass
 
     def authenticate(self):
         print self.auth.get_authorization_url()
@@ -111,9 +118,9 @@ class TBot(object):
     def run(self):
         pass
 
-    def wrap_up(self):
+    def wrap_up(self, tweet_limit=None):
         self.process_tweets()
-        self.publish_tweets()
+        self.publish_tweets(tweet_limit)
         pickle.dump(self.history, open(self.history_filename, 'w'))
 
 
