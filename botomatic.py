@@ -73,7 +73,7 @@ class TBot(object):
         return self.api.search(q=query, lang=lang)
 
     def handle_stream(self):
-        pass
+        return self.api.home_timeline()
 
     def handle_followers(self):
         pass
@@ -82,7 +82,6 @@ class TBot(object):
         http_re = re.compile(r'http://\S+')
         processed_tweets = []
         for tweet in self.tweets:
-            #print tweet
             if 'http://' in tweet:
                 tweet = http_re.sub(bitlify, tweet)
             processed_tweets.append(tweet)
