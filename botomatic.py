@@ -75,7 +75,7 @@ class TBot(object):
     def handle_stream(self):
         return self.api.home_timeline()
 
-    def handle_followers(self):
+    def handle_followers(self): # TODO
         pass
 
     def process_tweets(self):
@@ -97,7 +97,10 @@ class TBot(object):
                     print "FAKETWEET: " + tweet[:140] # for debug mode
                 else:
                     try:
-                        if limit and tweeted_count <= limit:
+                        if limit:
+                            if not tweeted_count < limit:
+                                continue
+                        else:
                             status = self.api.update_status(tweet[:140]) # cap length at 140 chars
                             self.history['last_tweet_id'] = status.id
                             tweeted_count += 1
