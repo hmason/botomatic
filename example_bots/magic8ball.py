@@ -17,7 +17,7 @@ class Magic8Ball(TBot):
     def run(self):
         for msg in self.handle_mentions():
             reply = "@%s %s" % (msg.user.screen_name, random.choice(RESPONSES))
-            self.tweets.append(reply)
+            self.tweets.append((reply, msg.id))
 
         self.wrap_up()
 

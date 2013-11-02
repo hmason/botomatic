@@ -92,16 +92,22 @@ class TBot(object):
         tweeted_count = 0
 
         if self.tweets:
-            for tweet in self.tweets:
+            for twt in self.tweets:
+                try:
+                    (tweet, reply_id) = twt
+                except ValueError:
+                    tweet = twt
+                    reply_id = None
+
                 if self.debug_mode:
                     print "FAKETWEET: " + tweet[:140] # for debug mode
                 else:
                     try:
                         if limit:
-                            if not tweeted_count < limit:
+                            if tweeted_count >= limit:
                                 continue
                         else:
-                            status = self.api.update_status(tweet[:140]) # cap length at 140 chars
+                            status = self.api.update_status(tweet[:140], reply_id) # cap length at 140 chars
                             self.history['last_tweet_id'] = status.id
                             tweeted_count += 1
                     except tweepy.error.TweepError: # prob a duplicate
