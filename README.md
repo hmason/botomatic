@@ -13,7 +13,7 @@ First, register the twitter account you want to use.
 Second, subclass the TBot class. Overload the ```run``` method to process the input messages (via handle_messages()) and add 
 any messages that you want to publish to the self.tweets list.
 
-For our hello world example, say hi to a Magic 8 Ball bot (alive [@dodecaDecider](https://twitter.com/dodecaDecider])):
+For our hello world example, say hi to a Magic 8 Ball bot (alive [@dodecaDecider](https://twitter.com/dodecaDecider)):
 
 
 ```python
