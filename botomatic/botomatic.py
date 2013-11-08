@@ -27,6 +27,7 @@ class TBot(object):
     bitlify_links = True
     settings = {}
     tweets = []
+    follow_handles = []
 
     def __init__(self, handle):
         self.history_filename = handle + "_history.pickle"
@@ -124,11 +125,21 @@ class TBot(object):
         self.settings['key'] = self.auth.access_token.key
         self.settings['secret'] = self.auth.access_token.secret
 
+    def follow_users(self):
+        for handle in self.follow_handles:
+            try:
+                user = self.api.get_user(screen_name=handle)
+                user.follow()
+            except tweepy.error.TweepError: # no such user?
+                continue
+
+
     def run(self):
         pass
 
     def wrap_up(self, tweet_limit=None):
         self.process_tweets()
+        self.follow_users()
         self.publish_tweets(tweet_limit)
         pickle.dump(self.history, open(self.history_filename, 'w'))
 
