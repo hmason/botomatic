@@ -28,6 +28,7 @@ class TBot(object):
     settings = {}
     tweets = []
     follow_handles = []
+    dms = []
 
     def __init__(self, handle):
         self.history_filename = handle + "_history.pickle"
@@ -114,6 +115,12 @@ class TBot(object):
                     except tweepy.error.TweepError: # prob a duplicate
                         pass
 
+    def publish_dms(self):
+        if self.dms:
+            for (handle, msg) in self.dms:
+                user = self.api.get_user(screen_name=handle)
+                self.api.send_direct_message(screen_name=handle, text=msg)
+
     def authenticate(self):
         print self.auth.get_authorization_url()
         verifier = raw_input('Verification code: ')
@@ -141,6 +148,7 @@ class TBot(object):
         self.process_tweets()
         self.follow_users()
         self.publish_tweets(tweet_limit)
+        self.publish_dms()
         pickle.dump(self.history, open(self.history_filename, 'w'))
 
 
