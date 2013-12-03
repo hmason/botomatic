@@ -36,3 +36,15 @@ class Magic8Ball(TBot):
 
         self.wrap_up()
 ```
+
+Additional Information
+======================
+You will need to create a file called "settings.py" containing the following:
+```BITLY_LOGIN = ""
+BITLY_APIKEY = ""
+CONSUMER_KEY = ""
+CONSUMER_SECRET = ""
+```
+
+The CONSUMER_KEY and CONSUMER_SECRET can be obtained by registering the app at https://dev.twitter.com/apps and following the directions.
+
