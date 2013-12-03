@@ -49,3 +49,9 @@ CONSUMER_SECRET = ""
 
 The CONSUMER_KEY and CONSUMER_SECRET can be obtained by registering the app at https://dev.twitter.com/apps and following the directions.
 
+Dependencies
+============
+botomatic requires Tweepy
+```
+pip install Tweepy
+```
