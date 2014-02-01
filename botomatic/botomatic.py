@@ -32,7 +32,7 @@ class TBot(object):
 
     def __init__(self, handle):
         self.history_filename = handle + "_history.pickle"
-        self.auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+        self.auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, secret=True)
         try:
             self.settings = pickle.load(open(handle + "_settings.pickle",'r'))
         except IOError:
