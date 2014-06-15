@@ -9,22 +9,9 @@ import re
 
 import settings
 
-def bitlify(match):
-    if settings.BITLY_LOGIN and settings.BITLY_APIKEY:
-        response = urllib2.urlopen("http://api.bitly.com/v3/shorten?" + urllib.urlencode({'longUrl': match.group(0), 'apiKey': settings.BITLY_APIKEY, 'login': settings.BITLY_LOGIN}))
-        data = response.read()
-        try:
-            url = json.loads(data)['data']['url']
-        except ValueError:
-            url = match.group(0)
-
-        return url
-
-
 class TBot(object):
     handle = None
     debug_mode = True
-    bitlify_links = True
     settings = {}
     tweets = []
     follow_handles = []
@@ -65,7 +52,7 @@ class TBot(object):
             mentions = self.api.mentions_timeline(since_id=self.history['last_mention_id'])
         else:
             mentions = self.api.mentions_timeline()
-        
+
         if mentions:
             self.history['last_mention_id'] = mentions[0].id
 
@@ -84,11 +71,9 @@ class TBot(object):
         http_re = re.compile(r'http://\S+')
         processed_tweets = []
         for tweet in self.tweets:
-            if 'http://' in tweet:
-                tweet = http_re.sub(bitlify, tweet)
             processed_tweets.append(tweet)
         self.tweets = processed_tweets
-                
+
 
     def publish_tweets(self, limit=None):
         tweeted_count = 0
