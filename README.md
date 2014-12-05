@@ -41,8 +41,6 @@ Additional Information
 ======================
 You will need to create a file called "settings.py" containing the following:
 ```
-BITLY_LOGIN = ""
-BITLY_APIKEY = ""
 CONSUMER_KEY = ""
 CONSUMER_SECRET = ""
 ```
