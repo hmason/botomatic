@@ -114,8 +114,8 @@ class TBot(object):
         except tweepy.TweepError:
             print 'Error: failed to get access token.'
 
-        self.settings['key'] = self.auth.access_token.key
-        self.settings['secret'] = self.auth.access_token.secret
+        self.settings['key'] = self.auth.access_token
+        self.settings['secret'] = self.auth.access_token_secret
 
     def follow_users(self):
         for handle in self.follow_handles:
