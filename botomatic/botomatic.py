@@ -1,13 +1,14 @@
 import sys
 import os
 import pickle
-import tweepy #requires version 2.1+
+import tweepy  # requires version 2.1+
 import urllib
 import urllib2
 import json
 import re
 
 import settings
+
 
 class TBot(object):
     handle = None
@@ -21,13 +22,13 @@ class TBot(object):
         self.history_filename = handle + "_history.pickle"
         self.auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
         try:
-            self.settings = pickle.load(open(handle + "_settings.pickle",'r'))
+            self.settings = pickle.load(open(handle + "_settings.pickle", 'r'))
         except IOError:
             self.authenticate()
-            pickle.dump(self.settings, open(handle + "_settings.pickle",'w')) # right place to save settings?
+            pickle.dump(self.settings, open(handle + "_settings.pickle", 'w'))  # right place to save settings?
 
         try:
-            self.history = pickle.load(open(self.history_filename,'r'))
+            self.history = pickle.load(open(self.history_filename, 'r'))
         except IOError:
             self.history = {}
 
@@ -64,7 +65,7 @@ class TBot(object):
     def handle_stream(self):
         return self.api.home_timeline()
 
-    def handle_followers(self): # TODO
+    def handle_followers(self):  # TODO
         pass
 
     def process_tweets(self):
@@ -73,7 +74,6 @@ class TBot(object):
         for tweet in self.tweets:
             processed_tweets.append(tweet)
         self.tweets = processed_tweets
-
 
     def publish_tweets(self, limit=None):
         tweeted_count = 0
@@ -87,17 +87,17 @@ class TBot(object):
                     reply_id = None
 
                 if self.debug_mode:
-                    print "FAKETWEET: " + tweet[:140] # for debug mode
+                    print("FAKETWEET: " + tweet[:140])  # for debug mode
                 else:
                     try:
                         if limit:
                             if tweeted_count >= limit:
                                 continue
                         else:
-                            status = self.api.update_status(tweet[:140], reply_id) # cap length at 140 chars
+                            status = self.api.update_status(tweet[:140], reply_id)  # cap length at 140 chars
                             self.history['last_tweet_id'] = status.id
                             tweeted_count += 1
-                    except tweepy.error.TweepError: # prob a duplicate
+                    except tweepy.error.TweepError:  # prob a duplicate
                         pass
 
     def publish_dms(self):
@@ -107,12 +107,12 @@ class TBot(object):
                 self.api.send_direct_message(screen_name=handle, text=msg)
 
     def authenticate(self):
-        print self.auth.get_authorization_url()
+        print(self.auth.get_authorization_url())
         verifier = raw_input('Verification code: ')
         try:
             self.auth.get_access_token(verifier)
         except tweepy.TweepError:
-            print 'Error: failed to get access token.'
+            print('Error: failed to get access token.')
 
         self.settings['key'] = self.auth.access_token
         self.settings['secret'] = self.auth.access_token_secret
@@ -122,9 +122,8 @@ class TBot(object):
             try:
                 user = self.api.get_user(screen_name=handle)
                 user.follow()
-            except tweepy.error.TweepError: # no such user?
+            except tweepy.error.TweepError:  # no such user?
                 continue
-
 
     def run(self):
         pass
