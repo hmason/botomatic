@@ -1,9 +1,11 @@
-import pickle
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import tweepy
 from botomatic import TBot
 
+
 class Protip(TBot):
-    debug_mode = True
 
     def __init__(self):
         handle = "protipbot"
@@ -14,11 +16,11 @@ class Protip(TBot):
         for result in results:
             try:
                 result.retweet()
-            except tweepy.error.TweepError: # private status update?
+            except tweepy.error.TweepError:  # private status update?
                 continue
 
-
         self.wrap_up()
+
 
 if __name__ == '__main__':
     p = Protip()
