@@ -1,12 +1,14 @@
 from botomatic import TBot
 import subprocess
 
+
 class bc_l(TBot):
     def __init__(self):
         handle = "bc_l"
         super(bc_l, self).__init__(handle)
 
-    def bc_l(self, input_text):
+    @staticmethod
+    def bc_l(input_text):
         p = subprocess.Popen("bc -l", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         try:
             out, err = p.communicate(input_text + "\n")
@@ -14,7 +16,6 @@ class bc_l(TBot):
             return ''
 
         return out
-
 
     def run(self):
         for dm in self.handle_DMs():
@@ -30,8 +31,8 @@ class bc_l(TBot):
                 reply = "@%s %s = %s" % (msg.user.screen_name, expression, out.strip())
                 self.tweets.append(reply)
 
-
         self.wrap_up()
+
 
 if __name__ == '__main__':
     b = bc_l()

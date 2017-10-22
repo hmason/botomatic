@@ -1,5 +1,7 @@
-import random
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+import random
 from botomatic import TBot
 
 RESPONSES = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes definitely', 'You may rely on it', 'As I see it yes',
@@ -7,12 +9,12 @@ RESPONSES = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes defi
              'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 
              'My sources say no', 'Outlook not so good', 'Very doubtful']
 
-class Magic8Ball(TBot):
-    debug_mode = False
 
-    def __init__(self):
+class Magic8Ball(TBot):
+
+    def __init__(self, **kwargs):
         handle = "dodecaDecider"
-        super(Magic8Ball, self).__init__(handle)
+        super(Magic8Ball, self).__init__(handle, **kwargs)
 
     def run(self):
         for msg in self.handle_mentions():
@@ -20,6 +22,7 @@ class Magic8Ball(TBot):
             self.tweets.append((reply, msg.id))
 
         self.wrap_up()
+
 
 if __name__ == '__main__':
     m = Magic8Ball()
