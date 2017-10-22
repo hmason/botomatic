@@ -1,3 +1,3 @@
 *.pyc
 *.pickle
-settings.py
+*.pkl
